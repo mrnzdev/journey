@@ -5,12 +5,18 @@ import CalendarIcon from "@/components/CalendarIcon"
 import { useEffect, useMemo, useState } from "react"
 
 export default function Home() {
-	const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
+	const [date, setDate] = useState(() => {
+		const now = new Date()
+		now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+		return now.toISOString().split("T")[0]
+	})
 	const [weeks, setWeeks] = useState(0)
 	const [isCalendarVisible, setIsCalendarVisible] = useState(false)
 
 	useEffect(() => {
-		const currentDate = new Date().toISOString().split("T")[0]
+		const now = new Date()
+		now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+		const currentDate = now.toISOString().split("T")[0]
 		setDate(currentDate)
 	}, [])
 
@@ -26,13 +32,7 @@ export default function Home() {
 		setWeeks(diffInWeeks)
 	}
 
-	const currentDate = new Date()
-	const startDate = new Date(1900, 0, 1)
-	const millisecondsInAWeek = 1000 * 60 * 60 * 24 * 7
-
-	const totalWeeks = Math.floor(
-		(currentDate.getTime() - startDate.getTime()) / millisecondsInAWeek,
-	)
+	const totalWeeks = 5200
 
 	const weeksArray = useMemo(
 		() => Array.from({ length: totalWeeks }),
@@ -43,6 +43,7 @@ export default function Home() {
 		day: "2-digit",
 		month: "short",
 		year: "numeric",
+		timeZone: "UTC",
 	})
 
 	return (
@@ -71,31 +72,33 @@ export default function Home() {
 						</div>
 					)}
 				</div>
-				<div className="flex flex-wrap gap-8">
+				<div className="flex flex-col gap-8">
 					{weeksArray
-						.map((_, i) => (
-							<div
-								key={i}
-								className={`h-4 w-4 rounded border-2 transition-transform duration-300 ${
-									i < weeks
-										? "scale-110 border-white bg-white"
-										: "border-zinc-500 bg-black"
-								}`}
-							></div>
-						))
 						.reduce<JSX.Element[][]>((acc, curr, index) => {
-							if (index % 12 === 0) {
+							if (index % 520 === 0) {
 								acc.push([])
 							}
-							acc[acc.length - 1].push(curr)
+							acc[acc.length - 1].push(
+								<div
+									key={index}
+									className={`h-2 w-2 border-2 transition-transform duration-300 ${
+										index < weeks
+											? "border-white bg-white"
+											: "border-zinc-500 bg-black"
+									}`}
+								></div>,
+							)
 							return acc
 						}, [])
 						.map((group, index) => (
 							<div
 								key={index}
-								className="grid grid-cols-3 gap-2"
+								className="flex items-start gap-2"
 							>
-								{group}
+								<div className="text-sm leading-none text-white">
+									{index * 10}
+								</div>
+								<div className="grid grid-cols-52 gap-2">{group}</div>
 							</div>
 						))}
 				</div>
