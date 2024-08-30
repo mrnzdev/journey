@@ -20,7 +20,7 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
 		const currentYear = new Date().getFullYear()
 		const currentMonth = new Date().getMonth()
 		const years = []
-		for (let year = currentYear - 124; year <= currentYear; year++) {
+		for (let year = currentYear - 100; year <= currentYear; year++) {
 			const isFutureYear =
 				year > currentYear ||
 				(year === currentYear && currentDate.getMonth() > currentMonth)
