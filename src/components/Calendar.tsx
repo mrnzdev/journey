@@ -37,7 +37,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDateChange, selectedDate }) => {
 	}
 
 	const handleDateClick = (date: Date) => {
-		if (date <= new Date() && date >= new Date(1900, 0, 1)) {
+		if (date <= new Date() && date >= new Date(1924, 0, 1)) {
 			setInternalSelectedDate(date)
 			onDateChange(date.toISOString().split("T")[0])
 		}
